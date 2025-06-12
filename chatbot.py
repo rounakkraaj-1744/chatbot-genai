@@ -5,26 +5,27 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.memory import ConversationBufferMemory
 
-GOOGLE_API_KEY = "YOUR_GEMINI_API_KEY"
+from dotenv import load_dotenv
+load_dotenv()
 
-if GOOGLE_API_KEY == "YOUR_GEMINI_API_KEY" or not GOOGLE_API_KEY:
-    print("WARNING: Please replace 'YOUR_GEMINI_API_KEY' with your actual Gemini API Key.")
-    print("The chatbot might not function correctly without a valid API key.")
-    if "GOOGLE_API_KEY" in os.environ:
-        GOOGLE_API_KEY = os.environ["GOOGLE_API_KEY"]
-        print("Using API key from environment variable GOOGLE_API_KEY.")
+GOOGLE_API_KEY = os.getenv("API_KEY")
+
+if GOOGLE_API_KEY == os.getenv("API_KEY") or not GOOGLE_API_KEY:
+    if os.getenv("API_KEY") in os.environ:
+        GOOGLE_API_KEY = os.environ[os.getenv("API_KEY")]
+        print("API found")
     else:
         print("No API key found. Exiting.")
         exit()
 
 genai.configure(api_key=GOOGLE_API_KEY)
 
-llm = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.7)
+llm = ChatGoogleGenerativeAI(model="gemini-flash", temperature=0.7)
 
 memory = ConversationBufferMemory(memory_key="chat_history")
 
 template = """You are a friendly and helpful AI assistant.
-You are designed to answer questions and engage in natural conversations.
+You are designed to answer questions, clear doubts, code and engage in natural conversations.
 
 Current conversation:
 {chat_history}
